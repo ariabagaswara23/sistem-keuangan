@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Submission;
 use App\Models\Dana;
 use App\Akun;
+use Cache;
 use Illuminate\Support\Facades\DB;
 use Session;
 use Illuminate\Support\Facades\Auth;
@@ -32,50 +33,36 @@ class DashboardController extends Controller
         }
         
     }
-    public function dashboardVerification(){
-
-        $akun = Auth::user();
-        $nip = $akun->nip;
-        $password = $akun->password;
-        $user_data = DB::table('accounts')
-                ->join('detail_accounts','detail_accounts.nip','=','accounts.nip')
-                ->join('jabatan','jabatan.id_jabatan','=','detail_accounts.id_jabatan')
-                ->select('accounts.*','detail_accounts.*','jabatan.nama_jabatan')
-                ->where('accounts.nip','=',$nip)
-                ->first();
-        if($user_data->status == "nonactive"){
-            $title = "";
-            echo "<script>alert('Akun ini sudah dinonaktifkan')</script>";
-            return view('login',['title' => $title]);
-        }else{
-            $akun_data = Akun::find($nip);
-            $akun_data->status = "online";
-            $akun_data->save();
+    public function userOnlineStatus()
+    {
+        $users = DB::table('accounts')->get();
+    
+        foreach ($users as $user) {
+            $akun = Akun::find($user->nip);
+            
+            if (Cache::has('user-is-online-' . $user->nip))
+                $akun->status = "online";
+            else
+                $akun->status = "offline";
+            $akun->save();
         }
+    }
+    public function marknotification(){
+
         session([
-            'nuptk' => $user_data->nuptk,
-            'nama' => $user_data->nama,
-            'jk' => $user_data->jk,
-            'noHP' => $user_data->noHP,
-            'nama_jabatan' => $user_data->nama_jabatan,
-            'alamat' => $user_data->alamat,
-            'picture' => $user_data->picture
+            'read_notif' => true,
         ]);
         session()->save();
 
-        //DATA-DATA UNTUK DITAMPILKAN DI DASHBOARD , Dipindahin ke switch untuk kecepatan load data
-
-        //KAPROG
-
+    }
+    public function dashboardVerification(){
 
         $danaBOS = $this->Dana->danaBOS();
         $danaAPBD = $this->Dana->danaAPBD();
-
         
-        
-        $jabatan = $user_data->nama_jabatan;
+        $jabatan = session()->get('nama_jabatan');
         // Pembagian route berdasarkan jabatan
-        $title = "Dashboard - ";
+        $title = "Dashboard";
         switch($jabatan){
             case 'Admin':
                 //ADMIN
@@ -83,7 +70,10 @@ class DashboardController extends Controller
                 $countOnline = $this->Akun->countOnline();
                 $offlineUsers = $this->Akun->akunOffline();
                 $countOffline = $this->Akun->countOffline();
-                return view('contents.index-kepsek',[ 'title' => $title, 'online' => $onlineUsers, 'offline' => $offlineUsers, 'conline' => $countOnline, 'coffline' => $countOffline]);
+                $countAll = $this->Akun->countAll();
+                $this->userOnlineStatus();
+                $allD = $this->Akun->allData();
+                return view('contents.index-kepsek',[ 'title' => $title, 'all' => $countAll, 'allData' => $allD, 'conline' => $countOnline, 'coffline' => $countOffline]);
                 //echo "<script>alert('Login sukses, Belum ada link khusus untuk admin')</script>";
                 break;
             case 'Kepala Sekolah':
@@ -125,12 +115,23 @@ class DashboardController extends Controller
             case 'Kaprog':
                 // TODO
                 $idkaprog = Auth::user()->nip;
-                $getJumlahPengajuan = DB::table('submissions')
-                ->join('accounts', 'accounts.nip', '=', 'submissions.id_pengaju')
-                ->select('submissions.*')
-                ->where('submissions.id_pengaju', '=', $idkaprog)
-                ->count();
-                return view('contents.index-kepsek',[ 'title' => $title , 'jumlahpengajuan' => $getJumlahPengajuan]);
+                $pengajuanNC = DB::table('submissions')
+                    ->join('accounts', 'accounts.nip', '=', 'submissions.id_pengaju')
+                    ->select('submissions.*')
+                    ->where([
+                        ['submissions.id_pengaju', '=', $idkaprog],
+                        ['submissions.status','not like', 'ACC-3%'],
+                    ])
+                    ->count();
+                $pengajuanC = DB::table('submissions')
+                    ->join('accounts', 'accounts.nip', '=', 'submissions.id_pengaju')
+                    ->select('submissions.*')
+                    ->where([
+                        ['submissions.id_pengaju', '=', $idkaprog],
+                        ['submissions.status','like', 'ACC-3%'],
+                    ])
+                    ->count();
+                return view('contents.index-kepsek',[ 'title' => $title , 'submissionC' => $pengajuanC, 'submissionNC','submissionNC' => $pengajuanNC]);
                 break;
             default:
                 echo "<script>alert('Data tidak ditemukan')</script>";

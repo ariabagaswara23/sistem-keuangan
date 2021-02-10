@@ -17,17 +17,21 @@ use Illuminate\Support\Facades\Response;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/',[DashboardController::class, 'index']);
-Route::get('/login',[LoginController::class, 'index'])->name('login');
+Route::get('/',[DashboardController::class, 'index'])->name('login');
+Route::get('/login',[DashboardController::class, 'index']);
 Route::post('/checking',[LoginController::class, 'checklogin']);
-Route::get('/login/successlogin',[LoginController::class, 'successlogin']);
+
 
 
 /* Masukan route 'yang butuh login dulu kalau bisa masuk' */
 Route::group(['middleware' => 'auth'],function(){
-    Route::get('/dashboard',[DashboardController::class, 'dashboardVerification']);
-    Route::get('/submission',[SubmissionController::class, 'index']);
-    Route::post('/submission',[SubmissionController::class, 'store']);
+    Route::get('/login/successlogin',[LoginController::class, 'successlogin']);
+    Route::get('/dashboard',[DashboardController::class, 'dashboardVerification'])->name('dashboard');
+    Route::get('/mark-notification',[DashboardController::class, 'marknotification'])->name('mark-notification');
+    Route::get('/submission',[SubmissionController::class, 'index'])->name('submission');
+    Route::get('/submission/new-submission',[SubmissionController::class, 'newsubmission'])->name('new_submission');
+    Route::get('/submission/inprogress-submission',[SubmissionController::class, 'inprogress'])->name('inprogress_submission');
+    Route::get('/submission/inprogress-submission/delete-submission/{id}',[SubmissionController::class, 'DeleteSubmission']);
 
     /* Route untuk izinkan dan tidak diizinkan */
     Route::post('/submission/tidakdiizinkankepsek',[SubmissionController::class, 'storetidakdiizinkankepsek']);
@@ -39,18 +43,23 @@ Route::group(['middleware' => 'auth'],function(){
     Route::post('/submission/tidakdiizinkanapbd',[SubmissionController::class, 'storetidakizinkanapbd']);
     Route::post('/submission/diizinkanapbd',[SubmissionController::class, 'storeizinkanapbd']);
 
-    Route::get('/addsubmission', [SubmissionController::class, 'addSubmission']);
-    Route::post('/addsubmission', [SubmissionController::class, 'createSubmission']);
+    Route::get('/submission/addsubmission', [SubmissionController::class, 'addSubmission'])->name('add_submission');
+    Route::get('/addsubmission', [SubmissionController::class, 'addSubmission'])->name('add_submission2');
+    Route::post('/submission/createsubmissions', [SubmissionController::class, 'createSubmission']);
     Route::post('/submission/add', [SubmissionController::class, 'store']);
-    Route::get('/report',[ReportController::class, '']);
-    Route::post('/submission/tidakdiizinkan',[SubmissionController::class, 'storetidakdiizinkan']);
-    Route::post('/submission/diizinkan',[SubmissionController::class, 'storediizinkan']);
-    Route::get('/report',[ReportController::class, 'index']);
-    Route::get('/report-submission',[ReportController::class, 'reportS']);
-    Route::get('/report-transaction',[ReportController::class, 'reportT']);
-    Route::get('/manage-account',[AccountController::class, 'index']);
-    Route::post('/store-data-account',[AccountController::class, 'store']);
-    Route::get('/edit-profil/{nip}',[AccountController::class, 'edit']);
+    Route::get('/report',[ReportController::class, ''])->name('report');
+
+    Route::get('/report',[ReportController::class, 'index'])->name('report');
+    Route::get('/report/report-submission',[ReportController::class, 'reportS'])->name('report_submission');
+    Route::get('/report-submission',[ReportController::class, 'reportS'])->name('report_submission2');
+    Route::get('/export-excel-submission',[ReportController::class, 'submissionExport']);
+    Route::get('/report/report-transaction',[ReportController::class, 'reportT'])->name('report_transaction');
+    Route::get('/export-excel-transaction',[ReportController::class, 'transaksiExport']);
+    Route::get('/manage-account',[AccountController::class, 'index'])->name('manage_account');
+    Route::get('/manage-account/add-account',[AccountController::class, 'create'])->name('add_account');
+    Route::post('/manage-account/store-data-account',[AccountController::class, 'store']);
+    Route::get('/edit-profil/{nip}',[AccountController::class, 'edit'])->name("edit_profil");
+    Route::get('/manage-account/edit-account-data/{nip}',[AccountController::class, 'edit'])->name("edit_data_account");
     Route::post('/update/{nip}',[AccountController::class, 'update']);
     Route::get('/del-account/{nip}',[AccountController::class, 'destroy']);
     Route::get('/deactive-account/{nip}',[AccountController::class, 'deactive']);

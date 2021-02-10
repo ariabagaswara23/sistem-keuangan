@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 use Session;
 use DB;
 use Auth;
+use Excel;
 use App\Models\Submission;
 use App\Models\Transaksi;
+use App\Exports\ReportTExport;
+use App\Exports\ReportSExport;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -21,7 +25,7 @@ class ReportController extends Controller
         
     }
     public function index(){
-        $title = "Report - ";
+        $title = "Report";
         if(session()->get('nama_jabatan') != "Kaprog"){
             return view('contents.report',['title' => $title]);
         }else{
@@ -59,23 +63,30 @@ class ReportController extends Controller
         return $bytes;
     }
     public function reportS(Request $request){
-        $title = "Submission Report - ";
+        $title = "Report Submission";
         $jabatan = session()->get('nama_jabatan');
+        $search = "";
+        if($request->search){
+            $search = $request->search;
+        }
         switch($jabatan){
             case 'Kepala Sekolah':
             case 'Admin':
             case 'Kepala Keuangan':
-                $report = $this->laporanS->reportA($request->search);
+                $report = $this->laporanS->reportA();
                 break;
             case 'Staf BOS':
-                $report = $this->laporanS->reportBOS($request->search);
+                $title = "Report Submission BOS";
+                $report = $this->laporanS->reportBOS();
                 break;
                
             case 'Staf APBD':
-                $report = $this->laporanS->reportAPBD($request->search);
+                $title = "Report Submission APBD";
+                $report = $this->laporanS->reportAPBD();
                 break;
             case 'Kaprog':
-                $report = $this->laporanS->reportKaprog($request->search);
+                $title = "Your Report Submission";
+                $report = $this->laporanS->reportKaprog();
                 break;
                 
             default:
@@ -83,14 +94,37 @@ class ReportController extends Controller
                 break;
         }
 
-        return view('contents.report-submission',['title' => $title,'report' => $report]);
+        return view('contents.report-submission',['title' => $title,'report' => $report,'search' => $search]);
     }
-    public function reportT(){
-        $title = "Transaction Report - ";
+    public function submissionExport()
+    {
         $jabatan = session()->get('nama_jabatan');
-        $in = $this->laporanT->countIn($jabatan);
-        $out = $this->laporanT->countOut($jabatan);
-        
+        switch($jabatan){
+            case 'Kepala Sekolah':
+            case 'Admin':
+            case 'Kepala Keuangan':
+                $report = $this->laporanS->reportA();
+                break;
+            case 'Staf BOS':
+                $report = $this->laporanS->reportBOS();
+                break;
+               
+            case 'Staf APBD':
+                $report = $this->laporanS->reportAPBD();
+                break;
+            case 'Kaprog':
+                $report = $this->laporanS->reportKaprog();
+                break;
+            default:
+                abort(404);
+                break;
+            
+            }
+            $export = new ReportSExport($report);
+            return Excel::download($export, Carbon::now()->toDateString().'_report_submission.xlsx');
+    }
+    public function transaksiExport(){
+        $jabatan = session()->get('nama_jabatan');
         switch($jabatan){
             case 'Kepala Sekolah':
             case 'Admin':
@@ -107,8 +141,38 @@ class ReportController extends Controller
                 abort(404);
                 break;
         }
+        $export = new ReportTExport($report);
+        return Excel::download($export, Carbon::now()->toDateString().'_report_transaction.xlsx');
+    }
+    public function reportT(Request $request){
+        $title = "Transaction Report";
+        $jabatan = session()->get('nama_jabatan');
+        $in = $this->laporanT->countIn($jabatan);
+        $out = $this->laporanT->countOut($jabatan);
+        $search = "";
+        if($request->search){
+            $search = $request->search;
+        }
+        switch($jabatan){
+            case 'Kepala Sekolah':
+            case 'Admin':
+            case 'Kepala Keuangan':
+                $report = $this->laporanT->reportA();
+                break;
+            case 'Staf BOS':
+                $title = "Report Transaksi BOS";
+                $report = $this->laporanT->reportBOS();
+                break;
+            case 'Staf APBD':
+                $title = "Report Transaksi APBD";
+                $report = $this->laporanT->reportAPBD();
+                break;
+            default:
+                abort(404);
+                break;
+        }
         
-        return view('contents.report-transaksi',['title' => $title,'masuk' => $in,'keluar' => $out,'report' => $report]);
+        return view('contents.report-transaksi',['title' => $title,'masuk' => $in,'keluar' => $out,'report' => $report,'search' => $search]);
     }
     
     

@@ -1,17 +1,15 @@
-@extends('layouts.layout-submission')
+@extends('layouts.layout-sidebar')
 
-@section('sub-content')
-<div class="content">
+@section('web-content')
+<div class="row">
+	<div class="col-md">
 		<div class="card">
-			<div class="card-header">
-				<h4>Tambah Pengajuan</h1>
-			</div>
 			<div class="card-body">
-				<form class="/addsubmission" method="post" enctype="multipart/form-data">
+				<form action="/submission/createsubmissions" method="post" enctype="multipart/form-data">
 					@csrf
 					<div class="form-group">
 						<label class="label">Judul Pengajuan</label>
-						<input type="text" name="judul" class="form-control" placeholder="Masukan Judul Pengajuan">
+						<input type="text" name="judul" class="form-control" placeholder="Masukan Judul Pengajuan" autocomplete="off" required>
 					</div>
 					<div class="form-group">
 						<label class="label">Pemasukan/Penggunaan</label>
@@ -23,11 +21,11 @@
 					</div>
 					<div class="form-group">
 						<label class="label">Jumlah</label>
-						<input type="text" name="jumlah" class="form-control" placeholder="Masukan Jumlah Dana">
+						<input type="text" name="jumlah" onkeypress="return hanyaAngka(event)"  class="form-control" placeholder="Masukan Jumlah Dana" autocomplete="off" required>
 					</div>
 					<div class="form-group">
 						<label class="label">Deskripsi</label>
-						<textarea class="form-control desk" name="deskripsi" placeholder="Masukan Deskripsi atau Penjelasan" maxlength="1000"></textarea>
+						<textarea class="form-control desk" name="deskripsi" placeholder="Masukan Deskripsi atau Penjelasan" maxlength="1000" autocomplete="off"></textarea>
 					</div>
 					<div class="form-group">
 						<label class="label">File Lampiran</label>
@@ -48,10 +46,11 @@
 					<input type="hidden" name="idTransaksi" id="idTransaksi" value="{{ $idTransaksi }}"><br>
 					<input type="hidden" name="idPengaju" value="{{ $idUser }}"><br>
 					<div class="form-group">
-						<input type="submit" name="" class="btn btn-primary">
+						<input type="submit" name="" class="btn btn-primary theme-2 w-100">
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
+</div>
 @endsection

@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use App\Models\Submission;
 use App\Models\DetailSub;
+use App\Models\Transaksi;
+use App\Models\Comment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,35 +22,32 @@ class SubmissionController extends Controller
 
     public static function formatSizeUnits($bytes)
     {
-        if ($bytes >= 1073741824)
-        {
+        if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-        }
-        elseif ($bytes >= 1048576)
-        {
+        } elseif ($bytes >= 1048576) {
             $bytes = number_format($bytes / 1048576, 2) . ' MB';
-        }
-        elseif ($bytes >= 1024)
-        {
+        } elseif ($bytes >= 1024) {
             $bytes = number_format($bytes / 1024, 2) . ' KB';
-        }
-        elseif ($bytes > 1)
-        {
+        } elseif ($bytes > 1) {
             $bytes = $bytes . ' bytes';
-        }
-        elseif ($bytes == 1)
-        {
+        } elseif ($bytes == 1) {
             $bytes = $bytes . ' byte';
-        }
-        else
-        {
+        } else {
             $bytes = '0 bytes';
         }
 
         return $bytes;
     }
-
     public function index(){
+        $title = "Submission";
+        return view('contents.submission',['title' => $title]);
+    }
+    public function newsubmission(Request $request)
+    {
+        $search = "";
+        if($request->search){
+            $search = $request->search;
+        }
         $submissionDataForKepsek = [
             'datasub' => $this->Submission->allDataForKepsek()
         ];
@@ -60,95 +60,110 @@ class SubmissionController extends Controller
         $submissionDataForAPBD = [
             'datasub' => $this->Submission->allDataForAPBD()
         ];
-        $title = "Submission - ";
+        $title = "Submission";
         switch (session()->get('nama_jabatan')) {
             case 'Admin':
-                return view('contents.submission',[ 'title' => $title]);
+                return view('contents.all-submission', ['title' => $title,'search' => $search]);
                 break;
             case 'Kepala Sekolah':
-                return view('contents.submission',[ 'title' => $title], $submissionDataForKepsek);
+                return view('contents.all-submission', ['title' => $title,'search' => $search], $submissionDataForKepsek);
                 break;
             case 'Kepala Keuangan':
-                return view('contents.submission',[ 'title' => $title], $submissionDataForKeuangan);
+                return view('contents.all-submission', ['title' => $title,'search' => $search], $submissionDataForKeuangan);
                 break;
             case 'Staf BOS':
-                return view('contents.submission',[ 'title' => $title], $submissionDataForBOS);
+                return view('contents.all-submission', ['title' => $title,'search' => $search], $submissionDataForBOS);
                 break;
             case 'Staf APBD':
-                return view('contents.submission',[ 'title' => $title], $submissionDataForAPBD);
-                break;
-            case 'Kaprog':
-                $user = [
-                    'idUser' => Auth::user()->nip
-                ];
-                $namajabatan = session()->get('nama_jabatan');
-                $getid = DB::table('submissions')
-                ->select('submissions.id_pengajuan')
-                ->get();
-                $count = $getid->count();
-                $id = 'S0000';
-                $id2 = 'T0000';
-                $counterlen = strlen((string)$count);
-                $id = substr_replace($id,(string)$count,$counterlen*-1);
-                $id2 = substr_replace($id2,(string)$count,$counterlen*-1);
-                return view('contents.submission',[ 'title' => $title,'idPengajuan' => $id,'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
+                return view('contents.all-submission', ['title' => $title,'search' => $search], $submissionDataForAPBD);
                 break;
             default:
-                $title = "Login - ";
-                return view('login',['title' => $title]);
+                $title = "Login";
+                return view('login', ['title' => $title,'search' => $search]);
                 break;
         }
-        
-        
     }
 
-    public function addSubmission(){
+    public function addSubmission()
+    {
         $user = [
             'idUser' => Auth::user()->nip
         ];
         $namajabatan = session()->get('nama_jabatan');
         $getid = DB::table('submissions')
-        ->select('submissions.id_pengajuan')
-        ->get();
-        $count = $getid->count();
-        $id = 'S0000';
-        $id2 = 'T0000';
+            ->select('submissions.id_pengajuan')
+            ->get();
+        $count = $getid->count() + 1;
+        $id = "S00001";
+        $id2 = "T00001";
         $counterlen = strlen((string)$count);
-        $id = substr_replace($id,(string)$count,$counterlen*-1);
-        $id2 = substr_replace($id2,(string)$count,$counterlen*-1);
+        $id = substr_replace($id, (string)$count, $counterlen * -1);
+        $id2 = substr_replace($id2, (string)$count, $counterlen * -1);
+
+        $title = "Add Submission";
         switch (session()->get('nama_jabatan')) {
             case 'Staf BOS':
-                return view('contents.add-submission', ['idPengajuan' => $id,'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
+                return view('contents.add-submission', ['title' => $title ,'idPengajuan' => $id, 'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
                 break;
             case 'Staf APBD':
-                return view('contents.add-submission', ['idPengajuan' => $id,'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
-                break; 
+                return view('contents.add-submission', ['title' => $title, 'idPengajuan' => $id, 'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
+                break;
+            case 'Kaprog':
+                    $user = [
+                        'idUser' => Auth::user()->nip
+                    ];
+                    $namajabatan = session()->get('nama_jabatan');
+                    $getid = DB::table('submissions')
+                        ->select('submissions.id_pengajuan')
+                        ->get();
+                    $count = $getid->count()+1;
+                    $id = "S00001";
+                    $id2 = "T00001";
+                    $counterlen = strlen((string)$count);
+                    $id = substr_replace($id, (string)$count, $counterlen * -1);
+                    $id2 = substr_replace($id2, (string)$count, $counterlen * -1);
+                    return view('contents.all-submission', ['title' => $title, 'idPengajuan' => $id, 'idTransaksi' => $id2, 'namajabatan' => $namajabatan], $user);
+                    break;
+            default:
+                $title = "Login";
+                return redirect('/login');
+                break;
+
         }
     }
-    
+    public function inprogress(Request $request)
+    {
+        $search = "";
+        if($request->search){
+            $search = $request->search;
+        }
+        $all = $this->Submission->yoursubmission();
+        $title = "Your In-progress Submissions";
+        return view('contents.inprogress-submission',['title' => $title, 'submission' => $all,'search' => $search]);
+    }
     public function createSubmission(Request $request)
     {
-        
-        $jabatan = $request->namajabatan;  
+
+        $jabatan = $request->namajabatan;
         $file = $request->file('file_lampiran');
-        if($file) $filename = $request->file_lampiran->getClientOriginalName();
+        if ($file) $filename = $request->file_lampiran->getClientOriginalName();
         else $filename = "";
-        if($jabatan == "Staf BOS"){
-            
+        if ($jabatan == "Staf BOS") {
+
             $jenispengajuan = $request->pilihan;
-            if($jenispengajuan == "Pemasukan"){
+            if ($jenispengajuan == "Pemasukan") {
                 $status = "ACC-1M";
-            }else{
+            } else {
                 $status = "ACC-1K";
             }
-        
+
             DB::table('transaksi')->insert([
                 'id_transaksi' => $request->idTransaksi,
                 'id_dana' => $request->idDana,
                 'jumlah' => $request->jumlah,
                 'jenis' => $request->jenis,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
 
             DB::table('submissions')->insert([
@@ -157,37 +172,37 @@ class SubmissionController extends Controller
                 'id_pengaju' => $request->idPengaju,
                 'judul' => $request->judul,
                 'status' => $status,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
 
             DB::table('detail_submissions')->insert([
                 'id_pengajuan' => $request->idPengajuan,
                 'deskripsi' => $request->deskripsi,
                 'file_lampiran' => $filename,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
-            
-            if($file) $file->move(storage_path("uploaded_file"),$file->getClientOriginalName());
-            
-            return redirect('/submission')->with('pesan','Pengajuan Berhasil Ditambahkan');
-        }else if($jabatan == "Staf APBD"){
-            
+
+            if ($file) $file->move(storage_path("uploaded_file"), $file->getClientOriginalName());
+
+            return redirect('/submission')->with('pesan', 'Pengajuan Berhasil Ditambahkan');
+        } else if ($jabatan == "Staf APBD") {
+
             $jenispengajuan = $request->pilihan;
-            if($jenispengajuan == "Pemasukan"){
+            if ($jenispengajuan == "Pemasukan") {
                 $status = "ACC-1M";
-            }else{
+            } else {
                 $status = "ACC-1K";
             }
-        
+
             DB::table('transaksi')->insert([
                 'id_transaksi' => $request->idTransaksi,
                 'id_dana' => $request->idDana,
                 'jumlah' => $request->jumlah,
                 'jenis' => $request->jenis,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
 
             DB::table('submissions')->insert([
@@ -196,26 +211,39 @@ class SubmissionController extends Controller
                 'id_pengaju' => $request->idPengaju,
                 'judul' => $request->judul,
                 'status' => $status,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
 
             DB::table('detail_submissions')->insert([
                 'id_pengajuan' => $request->idPengajuan,
                 'deskripsi' => $request->deskripsi,
                 'file_lampiran' => $filename,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
+                "created_at" => Carbon::now(),
+                "updated_at" => now()
             ]);
 
-            if($file) $file->move(storage_path("uploaded_file"),$file->getClientOriginalName());
-            return redirect('/submission')->with('pesan','Pengajuan Berhasil Ditambahkan');
-        }else{
-            
+            if ($file) $file->move(storage_path("uploaded_file"), $file->getClientOriginalName());
+            return redirect('/submission')->with('pesan', 'Pengajuan Berhasil Ditambahkan');
+        } else {
         }
-        
     }
-
+    public function DeleteSubmission($id)
+    {
+        $submission = Submission::find($id);
+        $idT = $submission->id_transaksi;
+        $submission->id_transaksi = null;
+        $submission->save();
+        $dTransaksi = Transaksi::where('id_transaksi','=',$idT);
+        $dTransaksi->delete();
+        $comments = Comment::where('id_pengajuan','=',$id);
+        $comments->delete();
+        $detailS = DetailSub::where('id_pengajuan','=',$id);
+        $detailS->delete();
+        
+        $submission->delete();
+        return redirect('/submission/inprogress-submission');
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -229,41 +257,49 @@ class SubmissionController extends Controller
         $idUser = Auth::user()->nip;
         $stat = $request->status;
         $jumlah = $request->jumlah;
-        if($stat == "ACC-2M"){
+        if ($stat == "ACC-2M") {
             $status = "ACC-3M";
             $jenis = "masuk";
             $jumlahdana = $currentdana + $jumlah;
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-                'jenis' => $jenis
+            DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+                'jenis' => $jenis,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('dana')->where('id_dana',$request->idDana)->update([
-                'jumlah' => $jumlahdana
+            DB::table('dana')->where('id_dana', $request->idDana)->update([
+                'jumlah' => $jumlahdana,
+                'updated_at' => Carbon::now(),
             ]);
-        }else{
+        } else {
             $status = "ACC-3K";
             $jenis = "keluar";
             $jumlahdana = $currentdana - $jumlah;
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-                'jenis' => $jenis
+            DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+                'jenis' => $jenis,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('dana')->where('id_dana',$request->idDana)->update([
-                'jumlah' => $jumlahdana
+            DB::table('dana')->where('id_dana', $request->idDana)->update([
+                'jumlah' => $jumlahdana,
+                'updated_at' => Carbon::now(),
             ]);
         }
-        
-        DB::table('comments')->insert([
+
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
-        
-        
+}
+
+
         return redirect('/submission');
     }
 
@@ -279,32 +315,40 @@ class SubmissionController extends Controller
         $idUser = Auth::user()->nip;
         $stat = $request->status;
         $jenis = "rejected";
-        if($stat == "ACC-2M"){
-            
-            DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-                'jenis' => $jenis
+        if ($stat == "ACC-2M") {
+
+            DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+                'jenis' => $jenis,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-        }else{
-            
-            DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-                'jenis' => $jenis
+        } else {
+
+            DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+                'jenis' => $jenis,
+                'updated_at' => Carbon::now(),
             ]);
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-        } 
-        DB::table('comments')->insert([
+        }
+
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
         
-        
-        
-        
+}
+
+
+
+
         return redirect('/submission');
     }
 
@@ -318,22 +362,26 @@ class SubmissionController extends Controller
     {
         $idUser = Auth::user()->nip;
         $stat = $request->status;
-        if($stat == "ACC-1M"){
+        if ($stat == "ACC-1M") {
             $status = "ACC-2M";
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-        }else{
+        } else {
             $status = "ACC-2K";
-            DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-                'status' => $status
+            DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+                'status' => $status,
+                'updated_at' => Carbon::now(),
             ]);
-        } 
-        DB::table('comments')->insert([
+        }
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
+}
         return redirect('/submission');
     }
 
@@ -348,17 +396,21 @@ class SubmissionController extends Controller
         $idUser = Auth::user()->nip;
         $status = "Rejected";
         $jenis = "rejected";
-        DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-            'status' => $status
+        DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+            'status' => $status,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-            'jenis' => $jenis
+        DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+            'jenis' => $jenis,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('comments')->insert([
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
+}
         return redirect('/submission');
     }
 
@@ -372,15 +424,18 @@ class SubmissionController extends Controller
     {
         $idUser = Auth::user()->nip;
         $status = "ACC-1K";
-        DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-            'status' => $status
+        DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+            'status' => $status,
+            'updated_at' => Carbon::now(),
         ]);
-         
-        DB::table('comments')->insert([
+
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
-        ]);
+            ]);
+        }
         return redirect('/submission');
     }
 
@@ -395,17 +450,21 @@ class SubmissionController extends Controller
         $idUser = Auth::user()->nip;
         $status = "Rejected";
         $jenis = "rejected";
-        DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-            'status' => $status
+        DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+            'status' => $status,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-            'jenis' => $jenis
+        DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+            'jenis' => $jenis,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('comments')->insert([
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
+}
         return redirect('/submission');
     }
 
@@ -419,15 +478,18 @@ class SubmissionController extends Controller
     {
         $idUser = Auth::user()->nip;
         $status = "ACC-1K";
-        DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-            'status' => $status
+        DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+            'status' => $status,
+            'updated_at' => Carbon::now(),
         ]);
-         
-        DB::table('comments')->insert([
+
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
+}       
         return redirect('/submission');
     }
 
@@ -442,17 +504,21 @@ class SubmissionController extends Controller
         $idUser = Auth::user()->nip;
         $status = "Rejected";
         $jenis = "rejected";
-        DB::table('submissions')->where('id_pengajuan',$request->id_pengajuan)->update([
-            'status' => $status
+        DB::table('submissions')->where('id_pengajuan', $request->id_pengajuan)->update([
+            'status' => $status,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('transaksi')->where('id_transaksi',$request->id_transaksi)->update([
-            'jenis' => $jenis
+        DB::table('transaksi')->where('id_transaksi', $request->id_transaksi)->update([
+            'jenis' => $jenis,
+            'updated_at' => Carbon::now(),
         ]);
-        DB::table('comments')->insert([
+        if($request->komentar){ 
+            DB::table('comments')->insert([
             'id_pengajuan' => $request->id_pengajuan,
             'komentar' => $request->komentar,
             'nip' => $idUser
         ]);
+}
         return redirect('/submission');
     }
 
@@ -465,50 +531,53 @@ class SubmissionController extends Controller
     public function store(Request $request)
     {
         //ini untuk kaprog
+        if($request->jumlah == 0){
+            return back()->with('pesan','Jumlah tidak boleh 0');
+        }
         $file = $request->file('file_lampiran');
-        if($file) $filename = $request->file_lampiran->getClientOriginalName();
+        if ($file) $filename = $request->file_lampiran->getClientOriginalName();
         else $filename = "";
         $jenispengajuan = $request->pilihan;
-            $iddana = $request->id_Dana;
-            if($jenispengajuan == "Penggunaan"){
-                if($iddana == "APBD"){
-                    $status = "ACC-AK";
-                }else if($iddana == "BOS"){
-                    $status="ACC-BK";
-                }
+        $iddana = $request->id_Dana;
+        if ($jenispengajuan == "Penggunaan") {
+            if ($iddana == "APBD") {
+                $status = "ACC-AK";
+            } else if ($iddana == "BOS") {
+                $status = "ACC-BK";
             }
-            
-            DB::table('transaksi')->insert([
-                'id_transaksi' => $request->idTransaksi,
-                'id_dana' => $request->id_Dana,
-                'jumlah' => $request->jumlah,
-                'jenis' => $request->jenis,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
-            ]);
-            
-            DB::table('submissions')->insert([
-                'id_pengajuan' => $request->idPengajuan,
-                'id_transaksi' => $request->idTransaksi,
-                'id_pengaju' => $request->idPengaju,
-                'judul' => $request->judul,
-                'status' => $status,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
-            ]);
+        }
 
-            
+        DB::table('transaksi')->insert([
+            'id_transaksi' => $request->idTransaksi,
+            'id_dana' => $request->id_Dana,
+            'jumlah' => $request->jumlah,
+            'jenis' => $request->jenis,
+            "created_at" => Carbon::now(),
+            "updated_at" => now()
+        ]);
 
-            DB::table('detail_submissions')->insert([
-                'id_pengajuan' => $request->idPengajuan,
-                'deskripsi' => $request->deskripsi,
-                'file_lampiran' => $filename,
-                "created_at"=> Carbon::now(),
-                "updated_at"=> now()
-            ]);
+        DB::table('submissions')->insert([
+            'id_pengajuan' => $request->idPengajuan,
+            'id_transaksi' => $request->idTransaksi,
+            'id_pengaju' => $request->idPengaju,
+            'judul' => $request->judul,
+            'status' => $status,
+            "created_at" => Carbon::now(),
+            "updated_at" => now()
+        ]);
 
-            if($file) $file->move(storage_path("uploaded_file"),$file->getClientOriginalName());
-            return redirect('/submission');
+
+
+        DB::table('detail_submissions')->insert([
+            'id_pengajuan' => $request->idPengajuan,
+            'deskripsi' => $request->deskripsi,
+            'file_lampiran' => $filename,
+            "created_at" => Carbon::now(),
+            "updated_at" => now()
+        ]);
+
+        if ($file) $file->move(storage_path("uploaded_file"), $file->getClientOriginalName());
+        return redirect('/submission');
     }
 
     /**
@@ -519,7 +588,6 @@ class SubmissionController extends Controller
      */
     public function search($id)
     {
-        
     }
 
     /**

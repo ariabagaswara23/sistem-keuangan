@@ -1,4 +1,15 @@
 <?php return array (
+  'davejamesmiller/laravel-breadcrumbs' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'DaveJamesMiller\\Breadcrumbs\\BreadcrumbsServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Breadcrumbs' => 'DaveJamesMiller\\Breadcrumbs\\Facades\\Breadcrumbs',
+    ),
+  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -47,6 +58,17 @@
     'providers' => 
     array (
       0 => 'Laravel\\Ui\\UiServiceProvider',
+    ),
+  ),
+  'maatwebsite/excel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
   ),
   'nesbot/carbon' => 
