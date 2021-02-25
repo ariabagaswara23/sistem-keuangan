@@ -36,7 +36,7 @@
   background: var(--green);
 }
 body {
-  font-family: "Poppins";
+  font-family: "Source Sans Pro", sans-serif !important;
   font-size: 1rem;
   color: inherit;
   overflow-x: hidden;
@@ -75,12 +75,28 @@ a {
 .bg-blue{
   background-color: var(--blue);
 }
+.icon{
+  width: 60px;
+  height: 60px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
 .vertical-center {
   margin: 0;
   position: absolute;
   top: 50%;
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
+}
+.vertical-align-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: table; 
+}
+.vertical-align-middle {
+  display: table-cell;
+  vertical-align: middle; 
 }
 .bg-login {
   position: fixed;
@@ -90,18 +106,76 @@ a {
   background-repeat: no-repeat;
   background-size: cover;
 }
+.ttl{
+  margin-bottom: 30px;
+}
+@media screen and (max-width: 700px) {
+  .ttl{
+    font-size: 18px;
+  }
+}
 .overlay {
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: #000000;
+  background-color: #000;
   background-size: cover;
-  opacity: 0.6;
+  opacity: 0.7;
   z-index: 0;
 }
+ /* Dropdown Button */
+ .drpbtn {
+  background-color: transparent;
+  color: #001014;
+  border: none;
+  cursor: pointer;
+}
+.drpbtn:hover{
+  color: var(--blue) !important;
+}
+/* Dropdown button on hover & focus */
+
+.drpdwn-link{
+  font-size: 15px;
+}
+/* The container <div> - needed to position the dropdown content */
+.drpdwn {
+  float: right;
+  position: relative;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.drpdwn-content {
+  right: 0;
+  display: none;
+  position:absolute;
+  background-color: #fff;
+  overflow: auto;
+  max-width: 210px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-top: 1.2rem;
+  border-style: ridge;
+}
+
+/* Links inside the dropdown */
+.drpdwn-content a {
+  color: black;
+  padding: 12px 16px;
+  width: 200px;
+  text-decoration: none;
+  display: block;
+  
+}
+
+/* Change color of dropdown links on hover */
+.drpdwn-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.dshow { display:block;} 
+
 .res-login-title {
   font-size: 2rem;
-  display: none;
 }
 .res-login-title2 {
   font-size: 1rem;
@@ -118,12 +192,43 @@ a {
   margin-bottom: 4rem;
   font-family: "Poppins Regular";
 }
+.row{
+ padding-top: 20px; 
+ padding-bottom: 60px;
+ padding-right: 40px;
+ padding-left: 40px;
+}
+.row2{
+  padding-bottom: 20px;
+  padding-right: 40px;
+  padding-left: 40px;
+ }
 .login-box {
-  padding: 12rem 3.5rem;
   background-color: white;
+  width: 70%;
   height: 100%;
+  margin: 0 auto;
+  border-radius: 30px;
   text-align: center;
 }
+
+.login-box .left{
+  float: left;
+    width: 42%;
+    height: 100%;
+    padding: 0 30px;
+    text-align: center;
+}
+.login-box .right{
+  float: right;
+    width: 58%;
+    height: 100%;
+    position: relative;
+    background-image: url("../img/bg/smk-1.png");
+    background-repeat: no-repeat;
+    background-size: cover; 
+  }
+
 .login-content {
   padding-right: 0;
 }
@@ -143,18 +248,29 @@ a {
   border-bottom: 1px solid var(--blue) !important;
 }
 .btn-login {
-  background-color: var(--lightblue);
+  background-color: #00A5CF;
   border-radius: 0;
   width: 100%;
   height: 40px;
   text-transform: uppercase;
 }
 .btn-login:hover {
-  background-color: var(--green);
-  border-color: var(--green);
+  background-color: #004E64;
+  border-color: #00A5CF;
 }
 .btn-login:focus, .btn-update:focus {
   box-shadow: none;
+}
+
+.m-user_name{
+  margin: 0 0 0 .5rem;
+    font-size: 0.8rem;
+    align-items: center;
+    padding: .2rem .5rem;
+    background-color: #e4e4e4;
+    border-radius: 20px;
+    max-width: 120px;
+    font-family: 'Poppins Light';
 }
 .btn-update{
   width: 100%;
@@ -191,7 +307,7 @@ a {
   transition: 1s;
 }
 .btn-dashboard2:hover{
-  background-color: white;
+  background-color: #005469;
   background-size: 120% auto;
 }
 .btn-dashboard2 p{
@@ -239,18 +355,18 @@ p {
   color: white;
 }
 p.title2 {
-  font-family: "Poppins ExtraLight";
+  font-family: "Source Sans Pro", sans-serif;
   font-size: 1.5rem;
 }
 h2 {
-  font-family: "Poppins Bold";
-  font-size: 3rem;
-  color: white;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 4rem;
+  color: black;
 }
 h3 {
   font-size: 2.2rem;
   color: var(--black);
-  font-family: "Poppins SemiBold";
+  font-family: "Source Sans Pro", sans-serif;
 }
 .login-title bl {
   font-size: 2rem;
@@ -278,12 +394,12 @@ bl {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: white;
+  background-color: #001014;
   z-index: 100;
   transition: 0.3s;
 }
 .header__toggle {
-  color: var(--blue);
+  color: #001014;
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -297,8 +413,7 @@ bl {
   border-radius: 50%;
   overflow: hidden;
   border-radius: 40px;
-  border: 3px solid var(--light-green);
-  margin-left: .5rem;
+  margin-left: -0.5rem;
 }
 .header__img img {
   width: 40px;
@@ -327,7 +442,7 @@ bl {
   left: -30%;
   width: calc(var(--nav-width) - 4px);
   height: 100vh;
-  background-color: var(--dark-blue);
+  background-color: #001014;
   padding: 0 0 0 0;
   transition: 0.35s;
   z-index: 100;
@@ -348,7 +463,7 @@ bl {
   padding: 0.5rem 0 0.5rem 1.5rem;
 }
 .nav__logo {
-  background-color: var(--light-green);
+  background-color: #005469;
   height: calc(var(--header-height) + 1rem);
   margin-bottom: 3rem;
   font-size: 1.25rem;
@@ -363,9 +478,8 @@ bl {
 }
 .nav__logo-name {
   color: var(--white);
-  font-family: "Poppins Bold";
   text-transform: uppercase;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
 .nav__link {
   position: relative;
@@ -375,6 +489,7 @@ bl {
   padding-bottom: 1.2rem;
   transition: 0.3s;
   opacity: 0.5;
+  margin-top: 0.2rem;
 }
 .nav__link:hover {
   color: var(--white);
@@ -390,7 +505,7 @@ bl {
   background-color: var(--red);
 }
 .nav__list{
-  background-color: #03506f33;
+  background-color: #014152;
 }
 .user_img{
   display: inline-flex;
@@ -406,14 +521,13 @@ bl {
   height: 2.2rem;
   border-radius: 3rem;
   transition: .4s;
-  margin-right: 1.5rem;
 }
 .user_name{
   opacity: 0;
   font-size: 0;
 }
 .user_profile{
-  text-align: left;
+  text-align: center;
 }
 .user_status{
   opacity: 0;
@@ -450,14 +564,14 @@ bl {
 .dynamic-c{
   position: absolute;
   padding: 1rem 0 0 0;
-  background-color: var(--white);
+  background-image: url(../img/bg/bg3.jpg);
   width: 100%;
   min-height: 100%;
 }
 .page_title{
   width: 100%;
   height: calc(var(--header-height) + 40px );
-  background-color: white;
+  background-color:transparent;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -470,13 +584,13 @@ bl {
   left: 0;
   width: 4px;
   height: 60px;
-  background-color: var(--light-green);
+  background-color: #00A5CF;
   transition-duration: 0s;
 }
 .p-title{
   width: auto;
   font-size: 1.7rem;
-  color: var(--green);
+  color: #001014 ;
   margin-bottom: 0;
 }
 .back_button{
@@ -492,7 +606,7 @@ bl {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     list-style: none;
-    background-color: white;
+    background-color: transparent;
     padding: 0;
     margin: 0;
     font-size: 0.9rem;
@@ -527,7 +641,7 @@ bl {
   padding: 1rem;
 }
 .container_content .row{
-  margin-top: 1rem;
+  margin-top: -1.2rem;
 }
 .container_content .row:first-child{
   margin-top: 0;
@@ -536,7 +650,7 @@ bl {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  padding: 1.5rem;
+  padding: 2.5rem;
   width: 100%;
   flex-direction: row;
 }
@@ -550,10 +664,10 @@ bl {
   flex-direction: column;
 }
 .gradient-1{
-  background-image: linear-gradient(to right, #af2d2d, #bf3736, #cf4140, #df4a4a, #f05454);
+  background-color: #af2d2d;
 }
 .gradient-2{
-  background-image: linear-gradient(to right, #03506f, #065677, #0a5c7e, #0d6386, #11698e);
+  background-color: #03506f;
 }
 .money-stat .desc-stat{
   height: auto;
@@ -566,8 +680,7 @@ bl {
 }
 .money-stat .desc-stat .card-title{
   color: white;
-  font-family: 'Poppins';
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   margin-bottom: .7rem;
 }
 .money-stat .desc-stat p{
@@ -577,7 +690,7 @@ bl {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 4rem;
   color: white;
   background-color: var(--black);
   border-radius: 60px;
@@ -587,12 +700,14 @@ bl {
 }
 .desc-stat{
   padding: 0;
-  color: var(--black);
+  color: white;
   margin: 0 0 0 2rem;
+  text-align: right;
 }
+
 .desc-stat .card-title{
   font-family: 'Poppins SemiBold';
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   margin-bottom: .2rem;
 }
 .desc-stat p{
@@ -606,7 +721,7 @@ bl {
   border-top-color: var(--light-green);
 }
 .box-head-color-b {
-  border-top-color: var(--blue);
+  border-top-color: #00a5cf;
 }
 .modal.show{
   width: 100%;
@@ -645,9 +760,10 @@ label.label{
 }
 .data-table{
   width: 100% !important;
+  border-radius: 15px;
 }
 .data-table thead{
-  background-color: var(--dark-blue);
+  background-color: #00A5CF;
 }
 .data-table thead th{
   text-align: center;
@@ -694,37 +810,25 @@ tr.tr-left th{
   background-color: var(--green);
 }
 .theme-money{
-  background: linear-gradient(
-    rgba(0,0,0,0.6),
-    rgba(0,0,0,0.6) ) ,
-    url('../img/bg/money.jpg');
+  background-color: var(--green);
   background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
 }
 .theme-paper{
-  background: linear-gradient(
-    rgba(0,0,0,0.6),
-    rgba(0,0,0,0.6) ) ,
-    url('../img/bg/paper.jpg');
+  background-color: var(--yellow);
   background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
 }
 .theme-document1{
-  background: linear-gradient(
-    rgba(0,0,0,0.6),
-    rgba(0,0,0,0.6) ) ,
-    url('../img/bg/document1.jpg');
+  background-color: var(--light-red);
   background-size: 110% auto;
   background-position: center;
   background-repeat: no-repeat;
 }
 .theme-document2{
-  background: linear-gradient(
-    rgba(0,0,0,0.6),
-    rgba(0,0,0,0.6) ) ,
-    url('../img/bg/document2.jpg');
+  background-color: var(--yellow);
   background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
@@ -758,7 +862,7 @@ pre{
   background-color: transparent;
   color: var(--black);
   border: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .dropdown-notif:hover{
   background-color: transparent !important;
@@ -784,7 +888,7 @@ pre{
 .jumlah-notif{
     content: "";
     position: absolute;
-    right: 30px;
+    right: 24px;
     top: 6px;
     color: #fff;
     background-color: var(--red);

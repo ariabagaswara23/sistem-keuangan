@@ -27,12 +27,12 @@
     <div class="content" id="body-pd">
         <header class="header" id="header">
             <div class="header__toggle" id="header-toggle">
-                <i class="fas fa-bars" id="toggle-icon" onclick="sidebarIcon()"></i>
+                <i class="fas fa-bars" id="toggle-icon" onclick="sidebarIcon()" style="color: white;"></i>
             </div>
             <div class="header__end">
                 <div class="header__icon-list">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle dropdown-notif" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="bell-notif" onclick="markNotif()">
+                        <button class="btn btn-secondary dropdown-toggle dropdown-notif" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="bell-notif" onclick="markNotif()" style="color: white;">
                           <i class="fas fa-bell"></i>
                         @if (count($notif) > 0)
                             @if (session()->get('read_notif') != true)
@@ -40,7 +40,7 @@
                             @endif
                             
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" >
                             @foreach ($notif->all() as $data)
                                 @php
                                     $interval = now()->diff($data->updated_at);
@@ -119,16 +119,23 @@
                           </div>
                         @endif
                       </div>
-                    <a href="/edit-profil/{{ Auth::user()->nip }}"  class="header__icon" title="Edit Profile">
-                        <i class="fa fa-user-edit"></i>
-                    </a>
-                </div>
-                <div class="m-user_name">
-                    <span class="m-name text-truncate">{{ session()->get('nama') }}</span>
+                    
                 </div>
                 <div class="header__img">
                     <img src="{{ URL::asset("img/avatar/".session()->get('picture') ) }}" alt="">
                 </div>
+                 <div class="drpdwn">
+                    <button onclick="myFunction()" class="drpbtn dropdown-toggle" style="color:white;"></button>
+                    <div id="myDrpdwn" class="drpdwn-content">
+                        <a href="/edit-profil/{{ Auth::user()->nip }}"  class="header__icon" title="Edit Profile">
+                            <i class="fa fa-user-edit"></i><span class="drpdwn-link"> Edit Profil</span>
+                        </a>
+                        <a href="#" class="nav__link logout" data-toggle="modal" data-target="#confirmationLogout">
+                            <i class="fas fa-sign-out-alt nav__icon"></i>
+                            <span class="drpdwn-link"> Logout</span>
+                        </a>
+                    </div>
+                </div> 
             </div>
             
         </header>
@@ -137,23 +144,17 @@
                 <div>
                     <a href="/dashboard" class="nav__logo">
                         <img src="{{ URL::asset("img/icon/stm.png") }}" class="nav__logo-icon" alt="">
-                        <span class="nav__logo-name " id="logo_name">SMKN 1 Cimahi</span>
+                        <span class="nav__logo-name " id="logo_name">Sistem Keuangan Online</span>
                     </a>
                     <div class="user_img" id="user-a">
-                        <img id="user-a_img" src="{{ URL::asset("img/avatar/avatar.jpg") }}" alt="">
-                        
-                        <div class="user_profile">
-                            <span class="user_name text-truncate" id="user_p">{{ session()->get('nama') }}</span>
-                            <div class="user_status" id="user_s">
-                                <i class="fas fa-square stat-icon"></i>
-                                <span class="status" >online</span>
-                            </div>
-                        </div>
-                        
+                        <img id="user-a_img" src="{{ URL::asset("img/avatar/".session()->get('picture')) }}" alt="">
+                    </div>
+                    <div class="user_profile">
+                        <span class="user_name text-truncate" id="user_p">{{ session()->get('nama') }}</span>
                     </div>
                     <div class="nav__list">
                         <a href="/dashboard" class="nav__link {{ cekLink()=='Dashboard' ? 'active' : '' }}" id="Dashboard">
-                            <i class="fas fa-tachometer-alt nav__icon"></i>
+                            <i class="fas fa-home nav__icon"></i>
                             <span class="nav_name">Dashboard</span>
                         </a>
                         @if (session()->get('nama_jabatan') != 'Admin')
@@ -177,10 +178,7 @@
                         
                     </div>
                 </div>
-                <a href="#" class="nav__link logout" data-toggle="modal" data-target="#confirmationLogout">
-                    <i class="fas fa-sign-out-alt nav__icon"></i>
-                    <span class="nav_name">Logout</span>
-                </a>
+                
             </nav>
         </div>
         
@@ -239,5 +237,24 @@
                 })
             });
         });
+    </script>
+    <script>
+        function myFunction() {
+        document.getElementById("myDrpdwn").classList.toggle("dshow");
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+        if (!event.target.matches('.drpbtn')) {
+            var dropdowns = document.getElementsByClassName("drpdwn-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('dshow')) {
+                    openDropdown.classList.remove('dshow');
+                }
+            }
+        }
+    } 
     </script>
 @endsection

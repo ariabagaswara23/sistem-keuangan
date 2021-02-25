@@ -6,24 +6,24 @@
 		<!-- Row Start-->
 		<div class="row">
 			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--light-green)">
+				<div class="card count-stat" style="background-color: rgb(3, 184, 3)">
+					<div class="icon-stat" style="background-color: rgb(3, 184, 3)">
 						<i class="fas fa-funnel-dollar"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$masuk ?? 'N'}}</h5>
-						<p class="card-text">Pemasukkan</p>
+						<p class="card-text" style="color: white">Pemasukkan</p>
 					</div>
 				</div>
 			</div>
 			<div class="col-md">
-				<div class="card count-stat">
+				<div class="card count-stat" style="background-color: var(--red)">
 					<div class="icon-stat" style="background-color: var(--red)">
 						<i class="fas fa-hand-holding-usd"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$keluar ?? 'N'}}</h5>
-						<p class="card-text">Pengeluaran</p>
+						<p class="card-text" style="color: white">Pengeluaran</p>
 					</div>
 				</div>
 			</div>
@@ -90,24 +90,24 @@
 	@if(session()->get('nama_jabatan') == "Staf APBD" || session()->get('nama_jabatan') == "Staf BOS") <!--Jabatan = Staf APBD, Staf BOS-->
 	<div class="row">
 		<div class="col-md">
-			<div class="card count-stat">
-				<div class="icon-stat" style="background-color: var(--light-green)">
+			<div class="card count-stat" style="background-color: rgb(3, 184, 3)">
+				<div class="icon-stat" style="background-color: rgb(3, 184, 3)">
 					<i class="fas fa-funnel-dollar"></i>
 				</div>
 				<div class="card-body desc-stat">
 					<h5 class="card-title">{{$masuk ?? 'N'}}</h5>
-					<p class="card-text">Pemasukkan</p>
+					<p class="card-text" style="color: white">Pemasukkan</p>
 				</div>
 			</div>
 		</div>
 		<div class="col-md">
-			<div class="card count-stat">
+			<div class="card count-stat" style="background-color: var(--red)">
 				<div class="icon-stat" style="background-color: var(--red)">
 					<i class="fas fa-hand-holding-usd"></i>
 				</div>
 				<div class="card-body desc-stat">
 					<h5 class="card-title">{{$keluar ?? 'N'}}</h5>
-					<p class="card-text">Pengeluaran</p>
+					<p class="card-text" style="color: white">Pengeluaran</p>
 				</div>
 			</div>
 		</div>

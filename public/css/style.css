@@ -3,22 +3,11 @@ body,
 html {
   height: 100%;
   overflow-x: auto;
+  font-family: "Roboto";
 }
 
 /* Membuat body html full screen dan membuat class background-1 untuk mempermudah */
 
-.icon {
-  width: auto;
-  height: 250px;
-  margin-top: 20px;
-  transition: width 2s, height 2s, transform 2s;
-}
-.icon:hover {
-  width: auto;
-  height: 250px;
-  margin-top: 20px;
-  transform: scale(1.1);
-}
 
 .go {
   margin-top: 50px;
@@ -203,7 +192,7 @@ html {
 }
 .box1 {
   position: relative;
-  border-radius: 3px;
+  border-radius: 3rem;
   background: #ffffff;
   border-top: 3px solid #d2d6de;
   width: 100%;
@@ -223,7 +212,7 @@ html {
   border-top-color: #296ef7;
 }
 .box-header {
-  color: #444;
+  color: #000;
   display: block;
   padding: 10px;
   position: relative;
@@ -625,12 +614,6 @@ label #sidebar_btn:hover {
     height: 200px;
     margin-top: 20px;
     transition: width 2s, height 2s, transform 2s;
-  }
-  .icon:hover {
-    width: auto;
-    height: 200px;
-    margin-top: 20px;
-    transform: scale(1.1);
   }
   .ldg-page {
     margin-top: 50px;

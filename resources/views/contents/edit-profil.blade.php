@@ -104,7 +104,7 @@
 			
 								<br><br>
 								<div class="form-group">
-									<button type="button" class="btn btn-primary btn-update" data-toggle="modal" data-target="#confirmation">
+									<button type="button" class="btn btn-primary btn-update" data-toggle="modal" data-target="#confirmation" style="background-color: #00a5cf">
 										Submit
 									</button>
 									  

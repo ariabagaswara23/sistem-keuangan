@@ -4,42 +4,31 @@
 
 	@if(session()->get("nama_jabatan") == "Admin") <!-- Jabatan = Admin-->
 		
-		<div class="row">
-			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--lightblue)">
-						<i class="fas fa-users"></i>
-					</div>
-					<div class="card-body desc-stat">
-						<h5 class="card-title">{{ $all }}</h5>
-						<p class="card-text">Total Users</p>
-					</div>
-				</div>
-			  </div>
-			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--green)">
+		<div class="row justify-content-center">
+			<div class="col-md-4">
+				<div class="card count-stat" style="background-color: rgb(3, 184, 3)">
+					<div class="icon-stat" style="background-color: rgb(3, 184, 3)">
 						<i class="fas fa-user-check"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{ $conline }}</h5>
-						<p class="card-text">Online Users</p>
+						<p class="card-text" style="color: white">Online Users</p>
 					</div>
 				</div>
 			  </div>
-			  <div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--red)">
+			  <div class="col-md-4">
+				<div class="card count-stat" style="background-color: rgb(199, 3, 3)">
+					<div class="icon-stat" style="background-color: rgb(199, 3, 3);">
 						<i class="fas fa-user-times"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{ $coffline }}</h5>
-						<p class="card-text">Offline Users</p>
+						<p class="card-text" style="color: white">Offline Users</p>
 					</div>
 				</div>
 			  </div>
 		</div>
-		<div class="row">
+		<div class="row justify-content-center" style="padding-top: 0px;">
 			<div class="col-md-6">
 				<div class="box1 box-head-color-b">
 					<div class="box-header with-border">
@@ -57,9 +46,9 @@
 							<tr>
 								<td>{{$a->nama}}</td>
 								@if ($a->status == "online")
-									<td style="color: var(--green)">{{ $a->status }}</td>
+									<td style="color: rgb(3, 184, 3)">{{ $a->status }}</td>
 								@else
-									<td style="color: var(--red)">{{ $a->status }}</td>
+									<td style="color: rgb(199, 3, 3)">{{ $a->status }}</td>
 								@endif 
 								
 								<td>{{ $a->last_seen }}</td>
@@ -89,7 +78,7 @@
 			}
 		@endphp
         @if(session()->get('nama_jabatan') == "Kepala Sekolah" || session()->get('nama_jabatan') == "Kepala Keuangan") <!--Jabatan = Kepsek, Ka. Keuangan-->
-        <div class="row">
+        <div class="row" style="padding-bottom: 10px;">
 			<div class="col-md-6">
 				<div class="card money-stat gradient-1">
 					<div class="card-body desc-stat">
@@ -105,7 +94,7 @@
 					<div class="card-body desc-stat">
 						<div class="vertical-center text-center">
 							<h5 class="card-title">Rp. {{ $apbd}}</h5>
-							<p class="card-text">Anggran APBD</p>
+							<p class="card-text">Anggaran APBD</p>
 						</div>
 					</div>
 				</div>
@@ -115,7 +104,7 @@
         @endif
 
         @if(session()->get('nama_jabatan') == "Staf BOS") <!--Jabatan = Staf BOS-->
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" style="padding-bottom: 10px;">
 			<div class="col-md-8">
 				<div class="card money-stat gradient-1">
 					<div class="card-body desc-stat">
@@ -130,50 +119,50 @@
         @endif
 
         @if(session()->get('nama_jabatan') == "Staf APBD") <!--Jabatan = Staf APBD-->
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" style="padding-bottom: 10px;">
 			<div class="col-md-8">
 				<div class="card money-stat gradient-2">
 					<div class="card-body desc-stat">
 						<div class="vertical-center text-center">
 							<h5 class="card-title">Rp. {{ $apbd}}</h5>
-							<p class="card-text">Anggran APBD</p>
+							<p class="card-text">Anggaran APBD</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
         @endif
-		<div class="row">
-			<div class="col-md">
-				<div class="card count-stat">
+		<div class="row justify-content-center">
+			<div class="col-md-4">
+				<div class="card count-stat" style="background-color: var(--yellow)">
 					<div class="icon-stat" style="background-color: var(--yellow)">
 						<i class="fas fa-file-import"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$dashboardsubmission}}</h5>
-						<p class="card-text">New Submissions {{ $mark }}</p>
+						<p class="card-text" style="color: white;">New Submissions {{ $mark }}</p>
 					</div>
 				</div>
 			</div>
-			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--green)">
+			<div class="col-md-4">
+				<div class="card count-stat" style="background-color: rgb(3, 184, 3)">
+					<div class="icon-stat" style="background-color: rgb(3, 184, 3)">
 						<i class="fas fa-file-import"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$reportS}}</h5>
-						<p class="card-text">Completed Submissions {{ $mark }}</p>
+						<p class="card-text" style="color: white">Completed Submissions {{ $mark }}</p>
 					</div>
 				</div>
 			</div>
-			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--purple)">
+			<div class="col-md-4">
+				<div class="card count-stat" style="background-color: rgb(106, 1, 177)">
+					<div class="icon-stat" style="background-color: rgb(106, 1, 177)">
 						<i class="fas fa-file-invoice-dollar"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$reportT}}</h5>
-						<p class="card-text">Transactions {{ $mark }}</p>
+						<p class="card-text" style="color: white">Transactions {{ $mark }}</p>
 					</div>
 				</div>
 			</div>
@@ -183,33 +172,34 @@
 
     @if(session()->get('nama_jabatan') == "Kaprog") <!--Jabatan = Kaprog-->
 		
-		<div class="row">
-			<div class="col-md">
-				<div class="card count-stat">
+		<div class="row justify-content-center">
+			<div class="col-md-5">
+				<div class="card count-stat" style="background-color: var(--yellow)">
 					<div class="icon-stat" style="background-color: var(--yellow)">
 						<i class="fas fa-file-import"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$submissionNC}}</h5>
-						<p class="card-text">Submissions in-progress</p>
+						<p class="card-text" style="color: white">Submissions in-progress</p>
 					</div>
 				</div>
 			</div>
-			<div class="col-md">
-				<div class="card count-stat">
-					<div class="icon-stat" style="background-color: var(--green)">
+			<div class="col-md-5">
+				<div class="card count-stat" style="background-color: rgb(3, 184, 3)">
+					<div class="icon-stat" style="background-color: rgb(3, 184, 3)">
 						<i class="fas fa-file-import"></i>
 					</div>
 					<div class="card-body desc-stat">
 						<h5 class="card-title">{{$submissionC}}</h5>
-						<p class="card-text">Completed Submissions</p>
+						<p class="card-text" style="color: white">Completed Submissions</p>
 					</div>
 				</div>
 			</div>
 		</div>
+		
 		<div class="row justify-content-center">
-			<div class="col-md-6">
-				<a class="btn btn-primary theme-2 btn-dashboard" href="/submission">
+			<div class="col-md-4">
+				<a class="btn btn-primary theme-2 btn-dashboard" href="/submission/addsubmission" style="background-color: #00A5CF">
 					<i class="fas fa-plus-circle mr-2"></i>
 					Add New Submission
 				</a>
